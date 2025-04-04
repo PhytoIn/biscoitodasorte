@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biscoito da Sorte</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f0e6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            text-align: center;
+            background-image: linear-gradient(to bottom right, #f5f0e6, #edd2a4);
+        }
+        
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background-color: #fff;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .container:hover {
+            transform: translateY(-5px);
+        }
+        
+        h1 {
+            color: #e67e22;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            position: relative;
+        }
+        
+        h1::after {
+            content: '🥠';
+            font-size: 1.5rem;
+            position: absolute;
+            margin-left: 10px;
+        }
+        
+        .cookie-img {
+            width: 120px;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.1));
+            transition: transform 0.5s ease;
+        }
+        
+        .cookie-img.shake {
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        .cookie-img.broken {
+            transform: scale(1.2);
+        }
+        
+        .phrase-container {
+            background-color: #fff9e6;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed #e67e22;
+            transition: all 0.3s ease;
+        }
+        
+        .phrase-container.revealed {
+            background-color: #fffaf0;
+            border: 2px solid #e67e22;
+        }
+        
+        #phrase {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #333;
+            font-weight: 500;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        
+        #phrase.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        #generate {
+            background-color: #e67e22;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(230, 126, 34, 0.3);
+        }
+        
+        #generate:hover {
+            background-color: #d35400;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(230, 126, 34, 0.4);
+        }
+        
+        #generate:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 10px rgba(230, 126, 34, 0.3);
+        }
+        
+        footer {
+            margin-top: 30px;
+            font-size: 0.9rem;
+            color: #888;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: rotate(0deg); }
+            20% { transform: rotate(-20deg); }
+            40% { transform: rotate(20deg); }
+            60% { transform: rotate(-10deg); }
+            80% { transform: rotate(10deg); }
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Biscoito da Sorte</h1>
+        
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cpath d='M60 10C32.5 10 15 30 15 52.5c0 25 20 40 45 40s45-15 45-40C105 30 87.5 10 60 10z' fill='%23f5d6a4' stroke='%23e6be7d' stroke-width='2'/%3E%3Cpath d='M60 92.5C35 92.5 15 77.5 15 52.5 15 30 32.5 10 60 10' fill='none' stroke='%23e6be7d' stroke-width='2' stroke-dasharray='5,5'/%3E%3C/svg%3E" alt="Biscoito da sorte" class="cookie-img" id="cookie-img">
+        
+        <div class="phrase-container" id="phrase-container">
+            <p id="phrase">Clique no botão para abrir um biscoito da sorte!</p>
+        </div>
+        
+        <button id="generate">Abrir Biscoito</button>
+    </div>
+    
+    <footer>© 2025 Biscoito da Sorte</footer>
+
+    <script>
+        const phrases = [
+      "A criação de um fluxograma é como desenhar um mapa do tesouro, guiando você para as descobertas científicas mais valiosas.",
+      "Assim como um engenheiro usa análise de sistemas e um psicólogo usa modelos causais, o cientista usa o fluxograma para investigar e entender sistemas complexos.",
+      "Fazer um fluxograma requer arte e prática, mas é a chave para desvendar os mistérios da natureza.",
+      "Ao usar fluxogramas, você pode seguir os caminhos e descobrir as conexões ocultas que levam a novas descobertas científicas.",
+      "O fluxograma é o melhor amigo do estudante de ciências, tornando a complexidade da natureza mais fácil de entender e explorar.",
+      "As variáveis dependentes são como uma teia, conectando todas as outras variáveis em um modelo estatístico complexo.",
+      "As variáveis independentes são como peças de dominó, afetando diretamente a variável dependente e, às vezes, indiretamente através de outras variáveis.",
+      "A dependência de uma variável não é uma fraqueza, mas sim uma característica importante em análises estatísticas.",
+      "Uma única variável independente pode ter um efeito dominó em todo o modelo, afetando a variável dependente de maneiras imprevisíveis.",
+      "Descobrir as relações entre as variáveis dependentes e independentes é como resolver um quebra-cabeça científico, revelando as interconexões ocultas da natureza.",
+      "A escolha da escala é como uma lente, afetando a nitidez e as conclusões de um estudo científico.",
+      "A escala é uma consideração crítica em estudos integrados, pois diferentes escalas podem levar a diferentes conclusões.",
+      "Às vezes, as conclusões em uma escala menor não se aplicam a uma escala maior, e vice-versa, tornando a escolha da escala ainda mais importante.",
+      "Escolher a escala certa é como ajustar o foco em um microscópio, permitindo que você veja os detalhes importantes de um fenômeno científico.",
+      "Ao escolher a escala correta, você pode garantir que suas conclusões sejam aplicáveis ao universo de interesse e ajudem a informar decisões importantes.",
+      "Variáveis quantitativas discretas são como contas em um cofrinho, podem ser contadas exatamente e nos fornecem informações precisas.",
+      "Variáveis quantitativas contínuas são como o tempo em um relógio, fluidas e contínuas, oferecendo uma visão suave e detalhada dos dados.",
+      "Variáveis qualitativas ordinais são como medalhas em uma corrida, classificando os dados em uma ordem hierárquica para nos ajudar a entender as relações entre eles.",
+      "Variáveis qualitativas nominais são como cores em um arco-íris, nos fornecendo informações sobre a diversidade dos dados, mas sem uma ordem hierárquica definida.",
+      "Cada tipo de variável em estatística é como uma ferramenta em uma caixa de ferramentas, com aplicações específicas para diferentes tipos de problemas de pesquisa.",
+      "As variáveis discretas são como pontos em um gráfico, permitindo que você conte e compare dados facilmente.",
+      "As variáveis contínuas são como um rio em movimento, permitindo que você explore as nuances e as mudanças graduais dos dados.",
+      "As variáveis ordinais são como uma escada, permitindo que você coloque os dados em ordem e faça comparações justas.",
+      "As variáveis quantitativas são como números em uma equação, permitindo que você faça cálculos precisos e obtenha insights importantes.",
+      "As variáveis qualitativas são como palavras em uma frase, permitindo que você descreva e entenda as características e qualidades dos dados.",
+      "As variáveis discretas são especialmente úteis em situações de contagem e de frequência, ajudando a visualizar padrões em dados discretos.",
+      "As variáveis contínuas são valiosas em estudos longitudinais, permitindo que você monitore mudanças graduais ao longo do tempo.",
+      "As variáveis ordinais são ideais para classificar dados em ordem de importância ou hierarquia, ajudando a tomar decisões informadas.",
+      "A filosofia popperiana ensina que só podemos avançar em nosso conhecimento quando rejeitamos nossas preconcepções e conjecturas errôneas.",
+      "A estatística popperiana é como um jogo de tentativa e erro, onde o objetivo é encontrar a verdade através da refutação constante de nossas hipóteses.",
+      "Assim como uma criança aprende através da descoberta de seus erros, os cientistas popperianos aprendem através da refutação de suas hipóteses e conjecturas.",
+      "Na estatística popperiana, é essencial questionar constantemente nossas suposições e conjecturas, a fim de descobrir a verdadeira natureza dos dados.",
+      "A estatística popperiana é uma busca constante pela verdade, baseada na rejeição de hipóteses errôneas e na constante busca de novas soluções.",
+      "A hipótese nula é como um ponto de referência na estatística, ajudando a determinar se uma hipótese alternativa é plausível ou não.",
+      "A hipótese nula é um importante ponto de partida na análise estatística, permitindo que os pesquisadores comparem seus resultados com o que seria esperado se sua hipótese estivesse errada.",
+      "A estatística convencional se concentra em provar que uma hipótese nula é falsa, em vez de provar que uma hipótese alternativa é verdadeira.",
+      "A hipótese nula é como uma bússola na análise estatística, ajudando a orientar os pesquisadores na direção correta.",
+      "A hipótese nula é uma ferramenta poderosa na estatística, permitindo que os pesquisadores testem suas hipóteses e obtenham resultados precisos.",
+      "A pseudo-repetição é como um espelho distorcido na análise estatística, levando a conclusões equivocadas e imprecisas.",
+      "A pseudo-repetição estatística é como usar lentes de óculos erradas, tornando os dados menos nítidos e confundindo a análise estatística.",
+      "A pseudo-repetição pode ocorrer quando as amostras são dependentes, mas tratadas como independentes em uma análise estatística, levando a resultados errôneos.",
+      "A pseudo-repetição é um erro comum em estudos biológicos e médicos, mas pode ser evitada com análises cuidadosas dos dados e consideração da dependência entre as amostras.",
+      "Evitar a pseudo-repetição é como ajustar uma máquina, garantindo que as análises estatísticas sejam precisas e confiáveis para uma tomada de decisão bem informada.",
+      "A pseudo-repetição espacial é como olhar para o céu noturno e ver constelações onde não existem, confundindo a análise estatística e obtendo conclusões errôneas.",
+      "A pseudo-repetição espacial é como plantar sementes muito próximas umas das outras e esperar que cada planta cresça independentemente, superestimando a precisão da análise estatística.",
+      "Evitar a pseudo-repetição espacial é como ajustar a lente de uma câmera, permitindo uma análise estatística precisa e capturando a verdadeira diversidade de espécies em um habitat natural.",
+      "A pseudo-repetição temporal é como olhar para um relógio que atrasou e acreditar que ainda é cedo, distorcendo a análise estatística e obtendo conclusões errôneas.",
+      "A pseudo-repetição temporal é como tomar a mesma medição várias vezes, mas tratando cada uma como se fosse independente, superestimando a precisão da análise estatística.",
+      "Evitar a pseudo-repetição temporal é como sintonizar um rádio, permitindo uma análise estatística precisa e capturando a verdadeira variação ao longo do tempo em um fenômeno estudado.",
+      "A pseudo-repetição filogenética é como acreditar que irmãos gêmeos são totalmente independentes, confundindo a análise estatística e obtendo conclusões errôneas.",
+      "A pseudo-repetição filogenética é como tratar primos distantes como se fossem desconhecidos, superestimando a precisão da análise estatística.",
+      "Evitar a pseudo-repetição filogenética é como reconhecer a semelhança entre parentes próximos, permitindo uma análise estatística precisa e capturando a verdadeira relação filogenética entre espécies ou indivíduos.",
+      "A pseudo-repetição técnica é como bater duas vezes na mesma tecla e acreditar que são duas teclas diferentes, confundindo a análise estatística e obtendo conclusões errôneas.",
+      "Evitar a pseudo-repetição técnica é como calibrar cuidadosamente um instrumento, permitindo uma análise estatística precisa e capturando a verdadeira variação na medição de um fenômeno.",
+      "A pseudo-repetição técnica é como interpretar uma obra de arte de formas diferentes, dependendo de quem está observando, superestimando a precisão da análise estatística.",
+      "A amostragem aleatória é como uma loteria, garantindo que todas as unidades de estudo tenham a mesma chance de serem escolhidas para a amostra.",
+      "A amostragem aleatória é como jogar uma moeda, permitindo uma análise estatística precisa e livre de vieses.",
+      "A amostragem estratificada é como dividir um bolo em fatias, garantindo que cada grupo de interesse esteja representado proporcionalmente na amostra.",
+      "A amostragem estratificada é como um buffet, permitindo que diferentes grupos tenham sua representatividade mantida na amostra.",
+      "A amostragem sistemática é como marcar cada n-ésimo item em uma lista, permitindo uma amostragem eficiente e padronizada.",
+      "A amostragem sistemática é como colher frutas em uma fileira, garantindo uma representatividade adequada da população de interesse.",
+      "A amostragem aleatória é a chave para a generalização dos resultados da amostra para a população maior de interesse.",
+      "A amostragem estratificada é essencial para garantir que cada subgrupo da população tenha sua representatividade mantida na amostra.",
+      "A amostragem sistemática é uma abordagem eficiente para a coleta de dados em populações grandes e extensas.",
+      "Cada método de amostragem tem suas próprias vantagens e limitações, e a escolha do método apropriado dependerá da população de interesse e dos objetivos do estudo.",
+        ];
+
+        const generateBtn = document.getElementById("generate");
+        const phraseElem = document.getElementById("phrase");
+        const cookieImg = document.getElementById("cookie-img");
+        const phraseContainer = document.getElementById("phrase-container");
+        let cookieBroken = false;
+        
+        // SVG para o biscoito fechado
+        const closedCookieSVG = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cpath d='M60 10C32.5 10 15 30 15 52.5c0 25 20 40 45 40s45-15 45-40C105 30 87.5 10 60 10z' fill='%23f5d6a4' stroke='%23e6be7d' stroke-width='2'/%3E%3Cpath d='M60 92.5C35 92.5 15 77.5 15 52.5 15 30 32.5 10 60 10' fill='none' stroke='%23e6be7d' stroke-width='2' stroke-dasharray='5,5'/%3E%3C/svg%3E";
+        
+        // SVG para o biscoito quebrado
+        const brokenCookieSVG = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cpath d='M40 30C32.5 30 25 40 25 52.5c0 15 10 25 25 25s25-10 25-25C75 40 47.5 30 40 30z' fill='%23f5d6a4' stroke='%23e6be7d' stroke-width='2'/%3E%3Cpath d='M90 30C82.5 30 75 40 75 52.5c0 15 10 25 25 25s5-10 5-25C105 40 97.5 30 90 30z' fill='%23f5d6a4' stroke='%23e6be7d' stroke-width='2'/%3E%3Cpath d='M75 52.5 L45 52.5' stroke='%23e6be7d' stroke-width='2' stroke-dasharray='5,5'/%3E%3C/svg%3E";
+        
+        // Inicialização - definir a mensagem inicial e estilo
+        phraseElem.textContent = "Clique no botão para abrir um biscoito da sorte!";
+        phraseElem.classList.add("show");  // Mostrar a mensagem inicial
+        
+        generateBtn.addEventListener("click", () => {
+            if (!cookieBroken) {
+                // Animar o biscoito
+                cookieImg.classList.add("shake");
+                
+                // Desabilitar o botão durante a animação
+                generateBtn.disabled = true;
+                
+                // Temporizador para mostrar a frase após a animação
+                setTimeout(() => {
+                    // Selecionar frase aleatória
+                    const randomIndex = Math.floor(Math.random() * phrases.length);
+                    
+                    // Esconder a frase atual antes de mostrar a nova
+                    phraseElem.classList.remove("show");
+                    
+                    setTimeout(() => {
+                        // Atualizar o texto da frase
+                        phraseElem.textContent = phrases[randomIndex];
+                        
+                        // Mudar a imagem do biscoito para "quebrado"
+                        cookieImg.classList.remove("shake");
+                        cookieImg.classList.add("broken");
+                        cookieImg.src = brokenCookieSVG;
+                        
+                        // Revelar a frase
+                        phraseContainer.classList.add("revealed");
+                        phraseElem.classList.add("show");
+                        
+                        // Mudar o texto do botão
+                        generateBtn.textContent = "Pegar Outro Biscoito";
+                        
+                        // Reativar o botão
+                        generateBtn.disabled = false;
+                        
+                        // Marcar o biscoito como quebrado
+                        cookieBroken = true;
+                    }, 300);
+                }, 500);
+            } else {
+                // Resetar para o biscoito fechado
+                cookieImg.classList.remove("broken");
+                cookieImg.src = closedCookieSVG;
+                
+                // Esconder a frase
+                phraseElem.classList.remove("show");
+                phraseContainer.classList.remove("revealed");
+                
+                // Animar o biscoito novamente
+                cookieImg.classList.add("shake");
+                
+                // Desabilitar o botão durante a animação
+                generateBtn.disabled = true;
+                
+                // Temporizador para mostrar a nova frase após a animação
+                setTimeout(() => {
+                    // Selecionar frase aleatória
+                    const randomIndex = Math.floor(Math.random() * phrases.length);
+                    
+                    setTimeout(() => {
+                        // Atualizar o texto da frase
+                        phraseElem.textContent = phrases[randomIndex];
+                        
+                        // Mudar a imagem do biscoito para "quebrado"
+                        cookieImg.classList.remove("shake");
+                        cookieImg.classList.add("broken");
+                        cookieImg.src = brokenCookieSVG;
+                        
+                        // Revelar a frase
+                        phraseContainer.classList.add("revealed");
+                        phraseElem.classList.add("show");
+                        
+                        // Reativar o botão
+                        generateBtn.disabled = false;
+                    }, 300);
+                }, 500);
+            }
+        });
+    </script>
+</body>
+</html>
